@@ -27,4 +27,4 @@ WORKDIR /root
 
 EXPOSE 1715
 
-ENTRYPOINT ["/root/startHoudiniLicenseServer.sh"]
+ENTRYPOINT ["./startHoudiniLicenseServer.sh"]
