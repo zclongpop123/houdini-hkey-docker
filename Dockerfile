@@ -6,7 +6,7 @@ RUN mkdir /root/houdini_download \
     && tar xf /root/houdini-19.5.303-linux_*.tar.gz -C /root/houdini_download --strip-components=1 \
     && apt-get update \
     && apt-get install -y bc strace \
-    && /root/houdini_download/houdini.install --auto-install --accept-EULA --install-license --no-install-houdini --no-install-engine-maya --no-install-engine-unity --no-install-menus --no-install-hfs-symlink
+    && /root/houdini_download/houdini.install --auto-install --accept-EULA 2021-10-13 --install-license --no-install-houdini --no-install-engine-maya --no-install-engine-unity --no-install-menus --no-install-hfs-symlink
 
 
 
