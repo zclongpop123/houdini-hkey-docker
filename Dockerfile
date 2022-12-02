@@ -3,7 +3,7 @@ FROM ubuntu:18.04 AS installer
 COPY ./houdini-19.5.303-linux_*.tar.gz /root/
 
 RUN mkdir /root/houdini_download \
-    && tar xf /root/houdini-17.5.173-linux_*.tar.gz -C /root/houdini_download --strip-components=1 \
+    && tar xf /root/houdini-19.5.303-linux_*.tar.gz -C /root/houdini_download --strip-components=1 \
     && apt-get update \
     && apt-get install -y bc strace \
     && /root/houdini_download/houdini.install --auto-install --accept-EULA --install-license --no-install-houdini --no-install-engine-maya --no-install-engine-unity --no-install-menus --no-install-hfs-symlink
