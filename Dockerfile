@@ -1,6 +1,6 @@
 FROM ubuntu:18.04 AS installer
 
-COPY ./houdini-17.5.173-linux_*.tar.gz /root/
+COPY ./houdini-19.5.303-linux_*.tar.gz /root/
 
 RUN mkdir /root/houdini_download \
     && tar xf /root/houdini-17.5.173-linux_*.tar.gz -C /root/houdini_download --strip-components=1 \
