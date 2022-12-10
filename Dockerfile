@@ -1,30 +1,27 @@
-FROM ubuntu:18.04 AS installer
+FROM rockylinux:8
+  
+COPY ./houdini-19.5.303-linux_x86_64_gcc9.3.tar.gz /root/houdini.tar.gz
 
-COPY ./houdini-19.5.303-linux_*.tar.gz /root/
+RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.aliyun.com/rockylinux|g' \
+    -i.bak \
+    -i.bak \
+    /etc/yum.repos.d/[Rr]ocky*.repo &&\
+    dnf makecache
 
-RUN mkdir /root/houdini_download \
-    && tar xf /root/houdini-19.5.303-linux_*.tar.gz -C /root/houdini_download --strip-components=1 \
-    && apt-get update \
-    && apt-get install -y bc strace \
-    && /root/houdini_download/houdini.install --auto-install --accept-EULA 2021-10-13 --install-license --no-install-houdini --no-install-engine-maya --no-install-engine-unity --no-install-menus --no-install-hfs-symlink
+RUN dnf install -y bc strace procps nginx &&\
+    mkdir -p /root/houdini_download &&\
+    tar xf /root/houdini.tar.gz -C /root/houdini_download --strip-components=1 &&\
+    /root/houdini_download/sesinetd.install &&\
+    rm -f /root/houdini.tar.gz &&\
+    rm -rf /root/houdini_download
 
+COPY ./sesinetd /usr/lib/sesi/sesinetd
+COPY ./start_lic_server.sh /root/
 
-
-FROM ubuntu:18.04
-
-COPY --from=installer /usr/lib/sesi/ /usr/lib/sesi
-COPY ./sesinetd /usr/lib/sesi/
-COPY startHoudiniLicenseServer.sh /root/
-
-RUN  chmod +x /usr/lib/sesi/sesinetd \
-     && chmod +x /root/startHoudiniLicenseServer.sh \
-     && rm /usr/lib/sesi/licenses.disabled \
-     && touch /usr/lib/sesi/licenses
-
-ENV HOME /root
-
-WORKDIR /root
+RUN chmod +x /usr/lib/sesi/sesinetd &&\
+    chmod +x /root/start_lic_server.sh
 
 EXPOSE 1715
 
-ENTRYPOINT ["./startHoudiniLicenseServer.sh"]
+ENTRYPOINT ["/root/start_lic_server.sh"]
