@@ -1,9 +1,8 @@
 FROM ubuntu:18.04 AS iterim
   
-COPY ./houdini-19.5.303-linux_x86_64_gcc9.3.tar.gz /root/houdini.tar.gz
+COPY ./houdini-19.5.*-linux_x86_64_gcc9.3.tar.gz /root/houdini.tar.gz
 
-RUN sed -i 's/https:\/\/mirrors.aliyun.com/http:\/\/mirrors.cloud.aliyuncs.com/g' /etc/apt/sources.list \
-    && apt-get update \
+RUN apt-get update \
     && apt-get install -y bc strace
 
 RUN  mkdir /root/houdini_download \
