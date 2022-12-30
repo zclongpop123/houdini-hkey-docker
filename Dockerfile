@@ -2,9 +2,7 @@ FROM ubuntu:18.04 AS iterim
   
 COPY ./houdini-19.5.*-linux_x86_64_gcc9.3.tar.gz /root/houdini.tar.gz
 
-RUN sed -i "s@http://.*archive.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list &&\
-    sed -i "s@http://.*security.ubuntu.com@https://mirrors.tuna.tsinghua.edu.cn@g" /etc/apt/sources.list &&\
-    apt-get update &&\
+RUN apt-get update &&\
     apt-get install -y bc strace
 
 RUN  mkdir /root/houdini_download &&\
