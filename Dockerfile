@@ -18,7 +18,8 @@ COPY startHoudiniLicenseServer.sh /root/
 
 RUN chmod +x /root/startHoudiniLicenseServer.sh \
   && rm /usr/lib/sesi/licenses.disabled \
-  && touch /usr/lib/sesi/licenses
+  && touch /usr/lib/sesi/licenses \
+  && touch /usr/lib/sesi/licenses.disabled
 
 ENV HOME /root
 
