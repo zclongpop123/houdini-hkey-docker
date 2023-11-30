@@ -14,6 +14,7 @@ FROM ubuntu:22.04
 
 COPY --from=installer /usr/lib/sesi /usr/lib/sesi
 COPY startHoudiniLicenseServer.sh /root/
+COPY ./sesinetd /usr/lib/sesi/
 
 RUN chmod +x /root/startHoudiniLicenseServer.sh &&\
     chmod +x /usr/lib/sesi/sesinetd &&\
