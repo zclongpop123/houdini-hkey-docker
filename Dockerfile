@@ -1,30 +1,36 @@
-FROM ubuntu:22.04 AS installer
+FROM rockylinux/rockylinux:10.2 AS installer
   
-COPY ./houdini-py3-18.5.759-linux_x86_64_gcc6.3.tar.gz /root/houdini.tar.gz
+RUN sed -e 's|^mirrorlist=|#mirrorlist=|g' \
+    -e 's|^#baseurl=http://dl.rockylinux.org/$contentdir|baseurl=https://mirrors.aliyun.com/rockylinux|g' \
+    -i.bak \
+    /etc/yum.repos.d/rocky*.repo
 
-RUN apt-get update &&\
-    apt-get install -y bc strace
+RUN dnf makecache &&\
+    dnf install -y bc strace ncurses procps-ng avahi
 
-RUN  mkdir /root/houdini_download &&\
-     tar xf /root/houdini.tar.gz -C /root/houdini_download --strip-components=1 &&\
+COPY houdini-22.0.466-linux_x86_64_gcc14.2.tar.gz /root/houdini.tar.gz
+
+RUN  mkdir -p /etc/init.d &&\
+     mkdir -p /root/houdini_download &&\
+     tar -xvf /root/houdini.tar.gz -C /root/houdini_download --strip-components=1 &&\
      /root/houdini_download/sesinetd.install
 
-#-
-FROM ubuntu:22.04
 
-COPY --from=installer /usr/lib/sesi /usr/lib/sesi
-COPY startHoudiniLicenseServer.sh /root/
-COPY ./sesinetd /usr/lib/sesi/
-
-RUN chmod +x /root/startHoudiniLicenseServer.sh &&\
-    chmod +x /usr/lib/sesi/sesinetd &&\
-    touch /usr/lib/sesi/licenses &&\
-    touch /usr/lib/sesi/licenses.disabled
-
-ENV HOME /root
+FROM rockylinux/rockylinux:10.2
 
 WORKDIR /root
 
+COPY --from=installer /usr/lib/sesi /usr/lib/sesi
+COPY ./entrypoint.sh ./entrypoint.sh
+
+RUN useradd sesinetd &&\
+    useradd www-data
+
+RUN chmod +x /usr/lib/sesi/sesinetd &&\
+    chmod +x ./entrypoint.sh &&\
+    touch /usr/lib/sesi/licenses &&\
+    touch /usr/lib/sesi/licenses.disabled
+
 EXPOSE 1715
 
-ENTRYPOINT ["/root/startHoudiniLicenseServer.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
