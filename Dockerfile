@@ -9,11 +9,17 @@ RUN dnf makecache &&\
     dnf install -y bc strace ncurses procps-ng avahi
 
 COPY houdini-22.0.466-linux_x86_64_gcc14.2.tar.gz /root/houdini.tar.gz
+COPY ./x64/FilePatch /root/FilePatch
 
 RUN  mkdir -p /etc/init.d &&\
      mkdir -p /root/houdini_download &&\
      tar -xvf /root/houdini.tar.gz -C /root/houdini_download --strip-components=1 &&\
      /root/houdini_download/sesinetd.install
+
+RUN cp /usr/lib/sesi/sesinetd sesinetd &&\
+    chmod +x /root/FilePatch &&\
+    /root/FilePatch sesinetd &&\
+    cp sesinetd /usr/lib/sesi/sesinetd
 
 
 FROM rockylinux/rockylinux:10.2
