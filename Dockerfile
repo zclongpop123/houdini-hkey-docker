@@ -21,7 +21,7 @@ RUN cp /usr/lib/sesi/sesinetd sesinetd &&\
     cp sesinetd /usr/lib/sesi/sesinetd
 
 
-FROM rockylinux/rockylinux:10.2
+FROM rockylinux/rockylinux:10.2-minimal
 
 WORKDIR /root
 
