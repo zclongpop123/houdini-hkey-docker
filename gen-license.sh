@@ -1,5 +1,5 @@
 #!/bin/bash
-CONTAINER="56d12cbf1f7f"
+CONTAINER="${1:?请提供容器名称或ID}"
 SESICTRL="/usr/lib/sesi/sesictrl"
 KEYGEN="./keygen"
 VER="22.0"
